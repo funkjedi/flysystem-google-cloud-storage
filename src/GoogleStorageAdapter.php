@@ -411,6 +411,26 @@ class GoogleStorageAdapter extends AbstractAdapter
     }
 
     /**
+     * Return a temporary url to a file.
+     *
+     * @param  string  $path
+     * @param  \DateTimeInterface  $expiration
+     * @param  array  $options
+     *
+     * @return string
+     */
+    public function getTemporaryUrl($path, $expiration, $options)
+    {
+        $url = $this->getObject($path)->signedUrl($expiration, $options);
+
+        if ($this->getStorageApiUri() === self::STORAGE_API_URI_DEFAULT) {
+            return $url;
+        }
+
+        return $this->getUrl($path) . '?' . parse_url($url, PHP_URL_QUERY);
+    }
+    
+    /**
      * @param string $path
      *
      * @return string
